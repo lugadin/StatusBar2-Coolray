@@ -87,20 +87,7 @@ public class OverlayShowingService extends Service {
             public void onReceive(Context ctx, Intent intent) {
 
                 switch (intent.getAction()) {
-                    case Intent.ACTION_TIME_TICK:
-                        printTime();
-                        break;
-                    case WifiManager.WIFI_STATE_CHANGED_ACTION:
-                    case WifiManager.RSSI_CHANGED_ACTION:
-                    case WifiManager.NETWORK_STATE_CHANGED_ACTION:
-                        printWifi();
-                        break;
-                    case "com.neusoft.statusbar.panel.expand":
-                        mTopView.findViewById(R.id.views).setVisibility(View.GONE);
-                        break;
-                    case "com.neusoft.statusbar.panel.collapse":
-                        mTopView.findViewById(R.id.views).setVisibility(View.VISIBLE);
-                        break;
+
                     default:
                         String s = "";
                         for (String k : intent.getExtras().keySet()) {
@@ -135,49 +122,14 @@ public class OverlayShowingService extends Service {
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Intent.ACTION_TIME_TICK);
-        intentFilter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
-        intentFilter.addAction(WifiManager.RSSI_CHANGED_ACTION);
-        intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-        intentFilter.addAction("com.neusoft.geely.bluetooth");
-        intentFilter.addAction("com.neusoft.statusbar.panel.collapse");
-        intentFilter.addAction("com.neusoft.statusbar.panel.expand");
-        intentFilter.addAction("c3alfus.action");
-        intentFilter.addAction("android.intent.action.POWER_OFF");
-        intentFilter.addAction("android.intent.action.POWER_ON");
-        intentFilter.addAction("ecarx.intent.action.bt.boot.completed");
-        intentFilter.addAction("ecarx.intent.category.BT");
-        intentFilter.addAction("ecarx.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED");
-        intentFilter.addAction("ecarx.bluetooth.adapter.action.CONNECTION_STATE_CHANGED");
-        intentFilter.addAction("ecarx.bluetooth.adapter.action.CONNECTION_STATE_CHANGED");
-        intentFilter.addAction("android.bluetooth.adapter.action.CONNECTION_STATE_CHANGED");
-        intentFilter.addAction("com.android.bluetooth.btservice.action.STATE_CHANGED");
-        intentFilter.addAction("android.bluetooth.device.action.BOND_STATE_CHANGED");
-        intentFilter.addAction("android.bluetooth.adapter.action.STATE_CHANGED");
-        intentFilter.addAction("android.intent.action.SCREEN_OFF");
-        intentFilter.addAction("*");
-//        intentFilter.addAction(android.bluetooth.BluetoothDevice.ACTION_FOUND);
-//        intentFilter.addAction(android.bluetooth.BluetoothAdapter.ACTION_DISCOVERY_STARTED);
-//        intentFilter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
-
+        intentFilter.addAction("com.neusoft.c3alfus.commservice.action.REVERSE_ON");
+        intentFilter.addAction("com.vrmms.intent.CARCONTROL");
+        intentFilter.addAction("com.neusoft.ACTION_WARNING_PAGE_HAS_DISMISS");
+        intentFilter.addAction("com.neusoft.avm.press");
         registerReceiver(_broadcastReceiver, intentFilter);
 
         IntentFilter intentFilterUsb = new IntentFilter();
-        intentFilterUsb.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-        intentFilterUsb.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-        intentFilterUsb.addAction(Intent.ACTION_MEDIA_MOUNTED);
-        intentFilterUsb.addAction(Intent.ACTION_MEDIA_EJECT);
-
         intentFilterUsb.addAction("bt.ecarxtestn.com.btphoneapp.phonemissed");
-        intentFilterUsb.addAction("ecarx.intent.action.bt.boot.completed");
-        intentFilterUsb.addAction("ecarx.intent.category.BT");
-        intentFilterUsb.addAction("ecarx.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED");
-        intentFilterUsb.addAction("ecarx.bluetooth.adapter.action.CONNECTION_STATE_CHANGED");
-        intentFilterUsb.addAction("ecarx.a2dp.acquire");
-        intentFilterUsb.addAction("CarControlReceiver");
-        intentFilterUsb.addAction("SXVehicleConfigDataReceiver");
-        intentFilterUsb.addAction("*");
-
-
         intentFilterUsb.addDataScheme("file");
 
         registerReceiver(_broadcastReceiverUsb, intentFilterUsb);
@@ -228,17 +180,51 @@ public class OverlayShowingService extends Service {
         _init();
         _broadcastReceiverInit();
         _createView();
-//        printTime();
+        printTime();
 //        printWifi();
 //        printBt();
 //        checkPath();
         TextView myTextView = (TextView) mTopView.findViewById(R.id.time);
 
-        final Intent intent = new Intent(Settings.ACTION_DATE_SETTINGS);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        final Intent intent = new Intent();
+        intent.setAction("com.vrmms.intent.CARCONTROL");
+        intent.putExtra("operate","window_open");
+        intent.putExtra("car-window",1);
+
+        final Intent intent2 = new Intent();
+        intent2.setAction("com.neusoft.c3alfus.commservice.action.REVERSE_ON");
+
+
+        Intent intent9 = new Intent("android.intent.action.VIEW");
+        intent9.setClassName( "com.neusoft.cardvr", "com.neusoft.cardvr.view.MainActivity");
+        intent9.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent9);
+//        public void toSettings(View view) {
+//            Intent intent = new Intent();
+//            intent.setClassName("com.android.settings", "com.android.settings.Settings");
+//            startActivity(intent);
+//        }
+//
+      final Intent intent3 = new Intent();
+        intent3.setAction("com.neusoft.avm.press");
+
+      final Intent intent4 = new Intent();
+        intent4.setAction("com.neusoft.ACTION_CANDIAGNOSIS");
+        intent4.putExtra("command",13);
+
+  final Intent intent5 = new Intent();
+        intent5.setAction("com.neusoft.ACTION_SHIELD_HARDKEY");
+        intent5.putExtra("require",0);
+
+
         myTextView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public boolean onLongClick(View v) {startActivity(intent);
+            public boolean onLongClick(View v) {
+                sendBroadcast(intent);
+                sendBroadcast(intent2);
+                sendBroadcast(intent3);
+                sendBroadcast(intent4);
+                sendBroadcast(intent5);
                 return false;
             }
         });
@@ -246,7 +232,7 @@ public class OverlayShowingService extends Service {
 
     public void printTime() {
         TextView myTextView = (TextView) mTopView.findViewById(R.id.time);
-//        myTextView.setText(_sdfWatchTime.format(new Date()));
+        myTextView.setText("12345");
     }
 
     public void printBt() {
