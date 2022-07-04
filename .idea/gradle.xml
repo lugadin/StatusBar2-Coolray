@@ -9,8 +9,8 @@
         <option name="gradleJvm" value="11 (2)" />
         <option name="modules">
           <set>
-            <option value="/fastspeed/StatusBar2" />
-            <option value="/fastspeed/StatusBar2/app" />
+            <option value="/fastspeed/StatusBar2-Coolray" />
+            <option value="/fastspeed/StatusBar2-Coolray/app" />
           </set>
         </option>
       </GradleProjectSettings>
