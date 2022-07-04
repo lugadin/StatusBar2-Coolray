@@ -19,6 +19,7 @@ import android.telephony.CarrierConfigManager;
 import android.view.*;
 import android.widget.TextView;
 import android.widget.Toast;
+//import com.neusoft.c3alfus.passthroughservice.PassthroughServiceApi;
 
 
 import java.io.BufferedReader;
@@ -29,12 +30,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-public class OverlayShowingService extends Service  {
+public class OverlayShowingService extends Service {
 
     WindowManager wm;
     ViewGroup mTopView;
     WifiManager mWifiManager;
-//    BluetoothManager bluetoothManager;
+    //    BluetoothManager bluetoothManager;
     BroadcastReceiver _broadcastReceiver;
     BroadcastReceiver _broadcastReceiverUsb;
     StorageManager storageManager;
@@ -105,7 +106,7 @@ public class OverlayShowingService extends Service  {
                         for (String k : intent.getExtras().keySet()) {
                             s += k + ":" + intent.getExtras().get(k).toString();
                         }
-//                        Toast.makeText(getApplicationContext(), "DEF:" + s, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "DEF:" + s, Toast.LENGTH_LONG).show();
                         break;
                 }
             }
@@ -126,7 +127,7 @@ public class OverlayShowingService extends Service  {
                         for (String k : intent.getExtras().keySet()) {
                             s += k + ":" + intent.getExtras().get(k).toString();
                         }
-//                        Toast.makeText(getApplicationContext(), "DEF2:" + s, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "DEF2:" + s, Toast.LENGTH_LONG).show();
                         break;
                 }
             }
@@ -153,6 +154,7 @@ public class OverlayShowingService extends Service  {
         intentFilter.addAction("android.bluetooth.device.action.BOND_STATE_CHANGED");
         intentFilter.addAction("android.bluetooth.adapter.action.STATE_CHANGED");
         intentFilter.addAction("android.intent.action.SCREEN_OFF");
+        intentFilter.addAction("*");
 //        intentFilter.addAction(android.bluetooth.BluetoothDevice.ACTION_FOUND);
 //        intentFilter.addAction(android.bluetooth.BluetoothAdapter.ACTION_DISCOVERY_STARTED);
 //        intentFilter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
@@ -171,6 +173,9 @@ public class OverlayShowingService extends Service  {
         intentFilterUsb.addAction("ecarx.bluetooth.a2dp.profile.action.CONNECTION_STATE_CHANGED");
         intentFilterUsb.addAction("ecarx.bluetooth.adapter.action.CONNECTION_STATE_CHANGED");
         intentFilterUsb.addAction("ecarx.a2dp.acquire");
+        intentFilterUsb.addAction("CarControlReceiver");
+        intentFilterUsb.addAction("SXVehicleConfigDataReceiver");
+        intentFilterUsb.addAction("*");
 
 
         intentFilterUsb.addDataScheme("file");
@@ -194,7 +199,7 @@ public class OverlayShowingService extends Service  {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
         return false;
     }
@@ -205,7 +210,7 @@ public class OverlayShowingService extends Service  {
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.FILL_PARENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY | WindowManager.LayoutParams.TYPE_SYSTEM_ALERT                ,
+                WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY | WindowManager.LayoutParams.TYPE_SYSTEM_ALERT,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                         | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
                         | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
@@ -223,15 +228,17 @@ public class OverlayShowingService extends Service  {
         _init();
         _broadcastReceiverInit();
         _createView();
-        printTime();
-        printWifi();
+//        printTime();
+//        printWifi();
 //        printBt();
 //        checkPath();
         TextView myTextView = (TextView) mTopView.findViewById(R.id.time);
+
+        final Intent intent = new Intent(Settings.ACTION_DATE_SETTINGS);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         myTextView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public boolean onLongClick(View v) {
-                startActivity(new Intent(Settings.ACTION_DATE_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+            public boolean onLongClick(View v) {startActivity(intent);
                 return false;
             }
         });
