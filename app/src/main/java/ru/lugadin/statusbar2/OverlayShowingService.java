@@ -156,8 +156,6 @@ public class OverlayShowingService extends Service {
                 PixelFormat.TRANSLUCENT);
         params.gravity = Gravity.TOP | Gravity.CENTER;
         wm.addView(mTopView, params);
-//        mTopView.findViewById(R.id.usb1).setVisibility(View.GONE);
-//        mTopView.findViewById(R.id.usb2).setVisibility(View.GONE);
     }
 
     @Override
@@ -167,40 +165,26 @@ public class OverlayShowingService extends Service {
         _broadcastReceiverInit();
         _createView();
         printTime();
-//        printWifi();
-//        printBt();
-//        checkPath();
         TextView myTextView = (TextView) mTopView.findViewById(R.id.time);
 
         final Intent intent = new Intent();
         intent.setAction("com.vrmms.intent.CARCONTROL");
-        intent.putExtra("operate","window_open");
-        intent.putExtra("car-window",1);
+        intent.putExtra("operate", "window_open");
+        intent.putExtra("car-window", 1);
 
         final Intent intent2 = new Intent();
         intent2.setAction("com.neusoft.c3alfus.commservice.action.REVERSE_ON");
 
-
-        Intent intent9 = new Intent("android.intent.action.VIEW");
-        intent9.setClassName( "com.neusoft.cardvr", "com.neusoft.cardvr.view.MainActivity");
-        intent9.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent9);
-//        public void toSettings(View view) {
-//            Intent intent = new Intent();
-//            intent.setClassName("com.android.settings", "com.android.settings.Settings");
-//            startActivity(intent);
-//        }
-//
-      final Intent intent3 = new Intent();
+        final Intent intent3 = new Intent();
         intent3.setAction("com.neusoft.avm.press");
 
-      final Intent intent4 = new Intent();
+        final Intent intent4 = new Intent();
         intent4.setAction("com.neusoft.ACTION_CANDIAGNOSIS");
-        intent4.putExtra("command",13);
+        intent4.putExtra("command", 13);
 
-  final Intent intent5 = new Intent();
+        final Intent intent5 = new Intent();
         intent5.setAction("com.neusoft.ACTION_SHIELD_HARDKEY");
-        intent5.putExtra("require",0);
+        intent5.putExtra("require", 0);
 
 
         myTextView.setOnLongClickListener(new View.OnLongClickListener() {
