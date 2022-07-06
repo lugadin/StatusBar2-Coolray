@@ -31,23 +31,12 @@ import java.util.Date;
 
 
 public class OverlayShowingService extends Service {
-
     WindowManager wm;
     ViewGroup mTopView;
     WifiManager mWifiManager;
-    //    BluetoothManager bluetoothManager;
     BroadcastReceiver _broadcastReceiver;
     BroadcastReceiver _broadcastReceiverUsb;
     StorageManager storageManager;
-
-
-//    Calendar c = Calendar.getInstance();
-//    c.set(2013, 8, 15, 12, 34, 56);
-//    AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-//    am.setTime(c.getTimeInMillis());
-
-
-//    private final SimpleDateFormat _sdfWatchTime = new SimpleDateFormat("dd.MM.yyyy  HH:mm");
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -56,16 +45,12 @@ public class OverlayShowingService extends Service {
 
     private void _init() {
         wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-//        bluetoothManager = (BluetoothManager) getApplicationContext().getSystemService(Context.BLUETOOTH_SERVICE);
         mWifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         storageManager = (StorageManager) getApplicationContext().getSystemService(Context.STORAGE_SERVICE);
-
-
     }
 
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-
         return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
 
@@ -74,7 +59,6 @@ public class OverlayShowingService extends Service {
             InetAddress ipAddr = InetAddress.getByName("google.com");
             //You can replace it with your name
             return !ipAddr.equals("");
-
         } catch (Exception e) {
             return false;
         }
@@ -85,9 +69,7 @@ public class OverlayShowingService extends Service {
         _broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context ctx, Intent intent) {
-
                 switch (intent.getAction()) {
-
                     default:
                         String s = "";
                         for (String k : intent.getExtras().keySet()) {
@@ -103,12 +85,6 @@ public class OverlayShowingService extends Service {
             @Override
             public void onReceive(Context ctx, Intent intent) {
                 switch (intent.getAction()) {
-                    case Intent.ACTION_MEDIA_MOUNTED:
-                        processInsertAction(intent);
-                        break;
-                    case Intent.ACTION_MEDIA_EJECT:
-                        processRemoveAction(intent);
-                        break;
                     default:
                         String s = "";
                         for (String k : intent.getExtras().keySet()) {
@@ -121,15 +97,25 @@ public class OverlayShowingService extends Service {
         };
 
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(Intent.ACTION_TIME_TICK);
         intentFilter.addAction("com.neusoft.c3alfus.commservice.action.REVERSE_ON");
         intentFilter.addAction("com.vrmms.intent.CARCONTROL");
         intentFilter.addAction("com.neusoft.ACTION_WARNING_PAGE_HAS_DISMISS");
         intentFilter.addAction("com.neusoft.avm.press");
+        intentFilter.addAction("android.intent.action.VIEW");
+        intentFilter.addAction("com.neusoft.mqtt.ACTION_MAINTAIN");
+        intentFilter.addAction("com.neusoft.extraservice.service.Wisdom");
+        intentFilter.addAction("com.neusoft.extraservice.LineDiag.ChangeModeReceiver");
         registerReceiver(_broadcastReceiver, intentFilter);
 
         IntentFilter intentFilterUsb = new IntentFilter();
-        intentFilterUsb.addAction("bt.ecarxtestn.com.btphoneapp.phonemissed");
+        intentFilterUsb.addAction("com.neusoft.c3alfus.commservice.action.REVERSE_ON");
+        intentFilterUsb.addAction("com.vrmms.intent.CARCONTROL");
+        intentFilterUsb.addAction("com.neusoft.ACTION_WARNING_PAGE_HAS_DISMISS");
+        intentFilterUsb.addAction("com.neusoft.avm.press");
+        intentFilterUsb.addAction("com.neusoft.mqtt.ACTION_MAINTAIN");
+        intentFilterUsb.addAction("com.neusoft.extraservice.service.Wisdom");
+        intentFilterUsb.addAction("com.neusoft.extraservice.LineDiag.ChangeModeReceiver");
+        registerReceiver(_broadcastReceiver, intentFilterUsb);
         intentFilterUsb.addDataScheme("file");
 
         registerReceiver(_broadcastReceiverUsb, intentFilterUsb);
